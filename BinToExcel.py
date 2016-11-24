@@ -12,8 +12,7 @@ from bitstring import BitArray, BitStream
 FileName = "hexfile.bin" 
 TemplateExcel = "BinToExcel_template.xls"
 OutputExcel = "BinToExcel_result.xls"
-MainPath = "c:" + os.sep + "python27" + os.sep + "exercise" + os.sep + "BintoExcel" + os.sep
-
+MainPath = os.getcwd()
 #functions
 def GenerateExcel(path, template, data, newfile):
 	#get the path folder to find the excel template. 
@@ -24,7 +23,9 @@ def GenerateExcel(path, template, data, newfile):
 	CurrentBit = 0
 	BitRange = 0
 	while(CurrentBit<int(len(data))):
-		BitRange = int(xlApp.Range("B"+str(RowIndex),"B"+str(RowIndex)).Value)
+		aaa = str(xlApp.Range("B"+str(RowIndex),"B"+str(RowIndex)).Value).split(".")
+		#print aaa[0]
+		BitRange = int(aaa[0])
 		xlApp.Range("C"+str(RowIndex),"C"+str(RowIndex)).Value = data[CurrentBit:CurrentBit+BitRange].bin
 		CurrentBit = CurrentBit + BitRange	
 		RowIndex=RowIndex+1
@@ -49,4 +50,7 @@ def CheckExcelData(TotalRows, xlApp):
 			break
 		RowIndex=RowIndex+1
 
-GenerateExcel(MainPath, TemplateExcel, BitArray(bytes=file(FileName, 'rb').read()[0:]), OutputExcel)
+		
+fp = open(FileName, 'rb')
+ba = BitArray(fp,length=256)
+GenerateExcel(MainPath, TemplateExcel, ba, OutputExcel)
